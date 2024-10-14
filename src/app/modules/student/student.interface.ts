@@ -1,5 +1,3 @@
-import { Schema, model, connect } from 'mongoose';
-
 // sub types
 
 export type TGuardian = {
@@ -11,17 +9,17 @@ export type TGuardian = {
   motherContactNo: string;
 };
 
-export type TUserName = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-};
-
 export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
+};
+
+export type TUserName = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
 };
 
 // main type
@@ -30,7 +28,7 @@ export type TStudent = {
   name: TUserName;
   email: string;
   gender: 'Male' | 'Female';
-  dateOfBirth: string;
+  dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
