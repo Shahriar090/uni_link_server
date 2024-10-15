@@ -4,4 +4,4 @@ const studentRouter = express.Router();
 
 studentRouter.route('/create-student').post(studentControllers.createStudent);
 
-export default studentRouter;
+export const studentRoutes = studentRouter;
