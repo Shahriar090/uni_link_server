@@ -82,7 +82,11 @@ const studentSchema = new Schema<TStudent>(
       required: true,
       unique: true,
     },
-    gender: ['Male', 'Female'],
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Others'],
+      required: true,
+    },
     dateOfBirth: { type: String },
     contactNo: {
       type: String,
@@ -94,7 +98,10 @@ const studentSchema = new Schema<TStudent>(
       required: true,
       unique: true,
     },
-    bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
     presentAddress: {
       type: String,
       required: true,
@@ -105,7 +112,11 @@ const studentSchema = new Schema<TStudent>(
     },
     guardian: guardianSchema,
     localGuardian: localGuardianSchema,
-    isActive: ['Active', 'Blocked'],
+    isActive: {
+      type: String,
+      enum: ['Active', 'Blocked'],
+      default: 'Active',
+    },
     profileImage: { type: String },
   },
   { timestamps: true },
