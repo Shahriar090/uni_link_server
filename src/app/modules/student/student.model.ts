@@ -76,7 +76,10 @@ const studentSchema = new Schema<TStudent>(
       required: true,
       unique: true,
     },
-    name: userNameSchema,
+    name: {
+      type: userNameSchema,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -110,8 +113,14 @@ const studentSchema = new Schema<TStudent>(
       type: String,
       required: true,
     },
-    guardian: guardianSchema,
-    localGuardian: localGuardianSchema,
+    guardian: {
+      type: guardianSchema,
+      required: true,
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: true,
+    },
     isActive: {
       type: String,
       enum: ['Active', 'Blocked'],
