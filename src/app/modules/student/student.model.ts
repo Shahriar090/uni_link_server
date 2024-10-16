@@ -12,13 +12,16 @@ const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: true,
+    trim: true,
   },
   middleName: {
     type: String,
+    trim: true,
   },
   lastName: {
     type: String,
     required: true,
+    trim: true,
   },
 });
 
@@ -26,6 +29,7 @@ const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: true,
+    trim: true,
   },
   fatherOccupation: {
     type: String,
@@ -38,6 +42,7 @@ const guardianSchema = new Schema<TGuardian>({
   motherName: {
     type: String,
     required: true,
+    trim: true,
   },
   motherOccupation: {
     type: String,
@@ -53,6 +58,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   occupation: {
     type: String,
@@ -84,6 +90,7 @@ const studentSchema = new Schema<TStudent>(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     gender: {
       type: String,
