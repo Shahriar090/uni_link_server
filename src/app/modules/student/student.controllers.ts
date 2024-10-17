@@ -33,7 +33,11 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Students Retrieving Failed',
+      data: {},
+    });
   }
 };
 
@@ -48,7 +52,11 @@ const getSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Student Retrieving Failed',
+      data: {},
+    });
   }
 };
 
