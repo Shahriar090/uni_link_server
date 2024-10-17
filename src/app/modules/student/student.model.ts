@@ -142,6 +142,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       enum: ['Active', 'Blocked'],
       default: 'Active',
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     profileImage: { type: String },
   },
   { timestamps: true },
@@ -174,4 +178,24 @@ studentSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+
+// query middlewares
+// for find method
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// for findOne method
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// for aggregation pipeline
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
