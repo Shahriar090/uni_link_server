@@ -27,6 +27,7 @@ export type TUserName = {
 // main type
 export type TStudent = {
   id: string;
+  password: string;
   name: TUserName;
   email: string;
   gender: 'Male' | 'Female' | 'Others';
@@ -42,12 +43,19 @@ export type TStudent = {
   isActive: 'Active' | 'Blocked';
 };
 
-export type TStudentMethods = {
-  isUserExists(id: string): Promise<TStudent | null>;
-};
+// static method
 
-export type TStudentModel = Model<
-  TStudent,
-  Record<string, never>,
-  TStudentMethods
->;
+export interface StudentModel extends Model<TStudent> {
+  isUserExist(id: string): Promise<TStudent | null>;
+}
+
+// instance method
+// export type TStudentMethods = {
+//   isUserExists(id: string): Promise<TStudent | null>;
+// };
+
+// export type TStudentModel = Model<
+//   TStudent,
+//   Record<string, never>,
+//   TStudentMethods
+// >;

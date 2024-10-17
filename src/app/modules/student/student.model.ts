@@ -1,12 +1,13 @@
 import { Schema, model } from 'mongoose';
 import {
+  StudentModel,
   TGuardian,
   TLocalGuardian,
   TStudent,
-  TStudentMethods,
-  TStudentModel,
   TUserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 // sub schema
 
@@ -77,12 +78,19 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 // main schema
-const studentSchema = new Schema<TStudent, TStudentMethods, TStudentModel>(
+const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: {
       type: String,
       required: true,
       unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      unique: true,
+      max: [20, 'Password Cannot Be More Than 20 Characters'],
+      min: [6, 'Password Cannot Be Less Than 6 Characters'],
     },
     name: {
       type: userNameSchema,
@@ -140,11 +148,30 @@ const studentSchema = new Schema<TStudent, TStudentMethods, TStudentModel>(
   { timestamps: true },
 );
 
-// custom methods
-
-studentSchema.methods.isUserExists = async function (id: string) {
-  const existedUser = await Student.findOne({ id });
-  return existedUser;
+// custom static method
+studentSchema.statics.isUserExist = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
 };
 
-export const Student = model<TStudent, TStudentModel>('Student', studentSchema);
+// custom instance methods
+
+// studentSchema.methods.isUserExists = async function (id: string) {
+//   const existedUser = await Student.findOne({ id });
+//   return existedUser;
+// };
+
+// middlewares
+
+studentSchema.pre('save', async function (next) {
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+studentSchema.post('save', function () {
+  console.log(this, 'Post middleware after saving the doc');
+});
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);

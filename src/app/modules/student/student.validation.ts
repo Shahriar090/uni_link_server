@@ -26,6 +26,10 @@ const localGuardianValidationSchema = z.object({
 
 const studentValidationSchema = z.object({
   id: z.string().min(1, 'Student ID is required'),
+  password: z
+    .string()
+    .max(20, 'Password Cannot Be More Than 20 Characters')
+    .min(6, 'Password Cannot Be Less Than 6 Characters'),
   name: userNameValidationSchema,
   email: z.string().email('Invalid email').min(1, 'Email is required').trim(),
   gender: z.enum(['Male', 'Female', 'Others'], {
