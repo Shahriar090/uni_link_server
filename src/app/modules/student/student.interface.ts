@@ -1,5 +1,7 @@
 // sub types
 
+import { Model } from 'mongoose';
+
 export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
@@ -39,3 +41,13 @@ export type TStudent = {
   profileImage?: string;
   isActive: 'Active' | 'Blocked';
 };
+
+export type TStudentMethods = {
+  isUserExists(id: string): Promise<TStudent | null>;
+};
+
+export type TStudentModel = Model<
+  TStudent,
+  Record<string, never>,
+  TStudentMethods
+>;
