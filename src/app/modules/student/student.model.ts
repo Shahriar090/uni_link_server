@@ -88,7 +88,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     password: {
       type: String,
       required: true,
-      unique: true,
       max: [20, 'Password Cannot Be More Than 20 Characters'],
       min: [6, 'Password Cannot Be Less Than 6 Characters'],
     },
@@ -171,7 +170,8 @@ studentSchema.pre('save', async function (next) {
   next();
 });
 
-studentSchema.post('save', function () {
-  console.log(this, 'Post middleware after saving the doc');
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
 });
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
