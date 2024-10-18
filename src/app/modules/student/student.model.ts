@@ -152,11 +152,11 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 );
 
 // virtual
-// custom static method
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
+// custom static method
 studentSchema.statics.isUserExist = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
