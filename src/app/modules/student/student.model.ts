@@ -6,8 +6,6 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 // sub schema
 
@@ -91,12 +89,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       unique: true,
       ref: 'User',
     },
-    password: {
-      type: String,
-      required: true,
-      max: [20, 'Password Cannot Be More Than 20 Characters'],
-      min: [6, 'Password Cannot Be Less Than 6 Characters'],
-    },
     name: {
       type: userNameSchema,
       required: true,
@@ -171,19 +163,6 @@ studentSchema.statics.isUserExist = async function (id: string) {
 // };
 
 // middlewares
-
-studentSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 // query middlewares
 // for find method
