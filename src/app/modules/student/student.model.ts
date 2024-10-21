@@ -104,7 +104,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       enum: ['Male', 'Female', 'Others'],
       required: true,
     },
-    dateOfBirth: { type: String },
+    dateOfBirth: { type: Date },
     contactNo: {
       type: String,
       required: true,
