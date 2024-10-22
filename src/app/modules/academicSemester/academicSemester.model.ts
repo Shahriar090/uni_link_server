@@ -36,6 +36,18 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
   { timestamps: true },
 );
 
+//Implementing a pre-hook middleware to check if a semester has already been created for a specific year.
+academicSemesterSchema.pre('save', async function (next) {
+  const isSemesterExist = await AcademicSemester.findOne({
+    year: this.year,
+    name: this.name,
+  });
+  if (isSemesterExist) {
+    throw new Error('This Semester Has Been Created Already.!');
+  }
+  next();
+});
+
 // model
 export const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',
