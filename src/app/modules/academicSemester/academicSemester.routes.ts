@@ -13,6 +13,12 @@ academicSemesterRouter
     academicSemesterControllers.createAcademicSemester,
   );
 
+// get all academic semester
+academicSemesterRouter
+  .route('/')
+  .get(academicSemesterControllers.getAllAcademicSemester);
+
+// get a single academic semester
 academicSemesterRouter
   .route('/:semesterId')
   .get(academicSemesterControllers.getASingleAcademicSemester);
