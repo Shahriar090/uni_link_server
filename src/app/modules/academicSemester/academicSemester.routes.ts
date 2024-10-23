@@ -13,4 +13,8 @@ academicSemesterRouter
     academicSemesterControllers.createAcademicSemester,
   );
 
+academicSemesterRouter
+  .route('/:semesterId')
+  .get(academicSemesterControllers.getASingleAcademicSemester);
+
 export const academicSemesterRoutes = academicSemesterRouter;
