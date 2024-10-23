@@ -23,4 +23,14 @@ academicSemesterRouter
   .route('/:semesterId')
   .get(academicSemesterControllers.getASingleAcademicSemester);
 
+// update academic semester
+academicSemesterRouter
+  .route('/:semesterId')
+  .patch(
+    validateRequest(
+      academicSemesterValidations.updateAcademicSemesterValidationSchema,
+    ),
+    academicSemesterControllers.updateAcademicSemester,
+  );
+
 export const academicSemesterRoutes = academicSemesterRouter;
