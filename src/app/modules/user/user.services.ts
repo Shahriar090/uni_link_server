@@ -1,16 +1,14 @@
 import config from '../../config';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
+import { generateStudentId } from './user.utils';
 
 // create student
-const createStudentIntoDb = async (password: string, studentInfo: TStudent) => {
-  // static method
-  //   if (await Student.isUserExist(studentInfo.id)) {
-  //     throw new Error('User Already Exist!');
-  //   }
-
+const createStudentIntoDb = async (password: string, payload: TStudent) => {
   //   create an user object
   let userInfo: Partial<TUser> = {};
 
@@ -20,8 +18,13 @@ const createStudentIntoDb = async (password: string, studentInfo: TStudent) => {
   //   set the user role
   userInfo.role = 'Student';
 
+  // find academic semester info
+  const admissionSemester = await AcademicSemester.findById(
+    payload.admissionSemester,
+  );
+
   //   set manually generated id (temporary)
-  userInfo.id = '2030100001';
+  userInfo.id = generateStudentId(admissionSemester!);
 
   //   creating a user
   const newUser = await User.create(userInfo);
@@ -30,22 +33,13 @@ const createStudentIntoDb = async (password: string, studentInfo: TStudent) => {
 
   if (Object.keys(newUser).length) {
     // set id and _id as user
-    studentInfo.id = newUser.id; //embedding id
-    studentInfo.user = newUser._id; //reference id
+    payload.id = newUser.id; //embedding id
+    payload.user = newUser._id; //reference id
 
     // creating new student
-    const newStudent = await Student.create(studentInfo);
+    const newStudent = await Student.create(payload);
     return newStudent;
   }
-
-  // instance method
-  // const newStudent = new Student(studentInfo);
-  // const existedUser = await newStudent.isUserExists(newStudent.id);
-  // if (existedUser) {
-  //   throw new Error('User Already Exist!');
-  // }
-  // const result = await newStudent.save();
-  // return result;
 };
 
 export const userServices = { createStudentIntoDb };
