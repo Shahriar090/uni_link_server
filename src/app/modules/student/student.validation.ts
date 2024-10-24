@@ -40,7 +40,7 @@ const createStudentValidationSchema = z.object({
       gender: z.enum(['Male', 'Female', 'Others'], {
         required_error: 'Gender is required',
       }),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       contactNo: z.string().min(1, 'Contact number is required'),
       emergencyContactNo: z
         .string()
