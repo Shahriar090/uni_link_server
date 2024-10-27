@@ -15,8 +15,9 @@ const getAllStudents = catchAsync(async (req, res, next) => {
 });
 // get a single student
 const getSingleStudent = catchAsync(async (req, res, next) => {
-  const studentId = req.params.studentId;
+  const { studentId } = req.params;
   const result = await studentServices.getSingleStudentFromDb(studentId);
+  console.log('Result from student controller', result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
