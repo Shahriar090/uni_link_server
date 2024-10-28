@@ -8,7 +8,7 @@ export const globalErrorHandler = (
 ) => {
   console.error(err.stack);
 
-  res.status(err.status || 500).json({
+  res.status(err.statusCode || 500).json({
     success: false,
     message: err.message || 'Something Went Wrong',
     error: err,
