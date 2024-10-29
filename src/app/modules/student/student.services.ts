@@ -16,7 +16,7 @@ const getAllStudentsFromDb = async () => {
 
 // get a single student
 const getSingleStudentFromDb = async (id: string) => {
-  const result = await Student.findById(id)
+  const result = await Student.findOne({ id })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -51,7 +51,7 @@ const deleteStudentFromDb = async (id: string) => {
         '',
       );
     }
-    // deleting student
+    // deleting student (soft delete)
     const deletedStudent = await Student.findOneAndUpdate(
       { id },
       { isDeleted: true },
@@ -66,7 +66,7 @@ const deleteStudentFromDb = async (id: string) => {
       );
     }
 
-    // deleting user
+    // deleting user (soft delete)
     const deletedUser = await User.findOneAndUpdate(
       { id },
       { isDeleted: true },
