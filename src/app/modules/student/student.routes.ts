@@ -2,6 +2,7 @@ import express from 'express';
 import { studentControllers } from './student.controllers';
 import { validateRequest } from '../../middlewares/validateRequest';
 import { studentValidations } from './student.validation';
+
 const studentRouter = express.Router();
 
 studentRouter.route('/get-students').get(studentControllers.getAllStudents);

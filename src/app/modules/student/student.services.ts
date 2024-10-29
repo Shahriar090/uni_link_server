@@ -3,7 +3,6 @@ import { Student } from './student.model';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
 import { User } from '../user/user.model';
-import { SetProfilingLevelOptions } from 'mongodb';
 import { TStudent } from './student.interface';
 // get all students
 const getAllStudentsFromDb = async () => {
@@ -28,10 +27,10 @@ const getSingleStudentFromDb = async (id: string) => {
 };
 
 // update a student
-const updateStudentIntoDb = async (
-  id: string,
-  payload: Partial<TStudent>,
-) => {};
+const updateStudentIntoDb = async (id: string, payload: Partial<TStudent>) => {
+  const result = await Student.findOneAndUpdate({ id }, payload);
+  return result;
+};
 
 // delete a student
 const deleteStudentFromDb = async (id: string) => {
@@ -90,7 +89,7 @@ const deleteStudentFromDb = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    throw error;
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Delete Student', '');
   }
 };
 export const studentServices = {

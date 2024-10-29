@@ -110,7 +110,7 @@ const updateLocalGuardianValidationSchema = z.object({
 const updateStudentValidationSchema = z.object({
   body: z.object({
     student: z.object({
-      name: updateUserNameValidationSchema,
+      name: updateUserNameValidationSchema.optional(),
       email: z
         .string()
         .email('Invalid email')
@@ -139,8 +139,8 @@ const updateStudentValidationSchema = z.object({
         .string()
         .min(1, 'Permanent address is required')
         .optional(),
-      guardian: updateGuardianValidationSchema,
-      localGuardian: updateLocalGuardianValidationSchema,
+      guardian: updateGuardianValidationSchema.optional(),
+      localGuardian: updateLocalGuardianValidationSchema.optional(),
       admissionSemester: z.string().optional(),
       profileImage: z.string().optional(),
     }),
