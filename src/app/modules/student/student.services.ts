@@ -3,6 +3,8 @@ import { Student } from './student.model';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
 import { User } from '../user/user.model';
+import { SetProfilingLevelOptions } from 'mongodb';
+import { TStudent } from './student.interface';
 // get all students
 const getAllStudentsFromDb = async () => {
   const result = await Student.find()
@@ -24,6 +26,12 @@ const getSingleStudentFromDb = async (id: string) => {
     });
   return result;
 };
+
+// update a student
+const updateStudentIntoDb = async (
+  id: string,
+  payload: Partial<TStudent>,
+) => {};
 
 // delete a student
 const deleteStudentFromDb = async (id: string) => {
@@ -88,5 +96,6 @@ const deleteStudentFromDb = async (id: string) => {
 export const studentServices = {
   getAllStudentsFromDb,
   getSingleStudentFromDb,
+  updateStudentIntoDb,
   deleteStudentFromDb,
 };
