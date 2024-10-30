@@ -5,7 +5,7 @@ import { studentValidations } from './student.validation';
 
 const studentRouter = express.Router();
 
-studentRouter.route('/get-students').get(studentControllers.getAllStudents);
+studentRouter.route('/').get(studentControllers.getAllStudents);
 studentRouter.route('/:studentId').get(studentControllers.getSingleStudent);
 studentRouter
   .route('/:studentId')
