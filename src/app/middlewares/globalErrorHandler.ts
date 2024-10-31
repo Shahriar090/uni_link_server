@@ -1,11 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler } from 'express';
 
-export const globalErrorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const globalErrorHandler: ErrorRequestHandler = (err, _, res, next) => {
   console.error(err.stack);
 
   res.status(err.statusCode || 500).json({
