@@ -5,6 +5,7 @@ import config from '../config';
 import handleZodError from '../errors/handleZodError';
 import handleValidationError from '../errors/handleValidationError';
 import handleCastError from '../errors/handleCastError';
+import handleDuplicateError from '../errors/handleDuplicateError';
 
 export const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -35,6 +36,11 @@ export const globalErrorHandler: ErrorRequestHandler = (
     errorSource = simplifiedError?.errorSource;
   } else if (err?.name === 'CastError') {
     const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
