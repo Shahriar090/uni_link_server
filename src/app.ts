@@ -8,13 +8,14 @@ export const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello From Uni-Link Server');
-});
-
 // using routes
 // Routes organized under the routes folder in a structured way
 app.use('/api/v1', router);
+
+// test routes
+app.get('/', async (req: Request, res: Response) => {
+  res.send('Hello From Uni-Link Server');
+});
 
 // global error handler
 app.use(globalErrorHandler);
