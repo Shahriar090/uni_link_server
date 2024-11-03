@@ -6,8 +6,7 @@ import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 // get all students
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
-  console.log('Base Query', query);
-  const queryObj = { ...query }; // copying query obj to remove items before filtering. This will prevent direct mutation of original object.
+  const queryObj = { ...query }; // Copying query object to avoid modifying the original.
   let searchTerm = '';
 
   if (query?.searchTerm) {
@@ -21,9 +20,9 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   });
 
   // filtering (actual match - key-value)
-  const excludeFields = ['searchTerm', 'sort', 'limit'];
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page'];
   excludeFields.forEach((elem) => delete queryObj[elem]);
-  console.log({ query, queryObj });
+  console.log({ query }, { queryObj });
   const filteredQuery = searchQuery
     .find(queryObj)
     .populate('admissionSemester')
@@ -31,7 +30,6 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
       path: 'academicDepartment',
       populate: { path: 'academicFaculty' },
     });
-
   // sorting
   let sort = '-createdAt';
   if (query?.sort) {
@@ -39,13 +37,22 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   }
   const sortQuery = filteredQuery.sort(sort);
 
-  // limit
+  // limit, page, and skip
   let limit = 1;
+  let page = 1;
+  let skip = 0;
+
   if (query?.limit) {
-    limit = query.limit as number;
+    limit = Number(query.limit);
+  }
+  if (query?.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
   }
 
-  const limitQuery = await sortQuery.limit(limit);
+  const paginateQuery = sortQuery.skip(skip);
+
+  const limitQuery = await paginateQuery.limit(limit);
   return limitQuery;
 };
 
