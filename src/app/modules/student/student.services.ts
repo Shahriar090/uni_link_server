@@ -5,8 +5,17 @@ import httpStatus from 'http-status-codes';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 // get all students
-const getAllStudentsFromDb = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
+  let searchTerm = '';
+
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',

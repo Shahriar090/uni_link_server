@@ -6,8 +6,6 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import AppError from '../../errors/appError';
-import httpStatus from 'http-status-codes';
 
 // sub schema
 
