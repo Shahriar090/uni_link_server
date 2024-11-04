@@ -13,7 +13,8 @@ class QueryBuilder<T> {
 
   //   search method
   search(searchableFields: string[]) {
-    if (this?.query?.searchTerm) {
+    const searchTerm = this?.query?.searchTerm;
+    if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields.map(
           (field) =>
@@ -34,6 +35,13 @@ class QueryBuilder<T> {
 
     this.modelQuery = this.modelQuery.find(queryObj);
 
+    return this;
+  }
+
+  // sort method
+  sort() {
+    const sort = this?.query?.sort || '-createdAt';
+    this.modelQuery = this.modelQuery.sort(sort as string);
     return this;
   }
 }

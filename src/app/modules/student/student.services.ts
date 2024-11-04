@@ -6,30 +6,30 @@ import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 // get all students
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
-  const queryObj = { ...query }; // Copying query object to avoid modifying the original.
-  let searchTerm = '';
-  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+  // const queryObj = { ...query }; // Copying query object to avoid modifying the original.
+  // let searchTerm = '';
+  // const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
 
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as string;
-  }
+  // if (query?.searchTerm) {
+  //   searchTerm = query?.searchTerm as string;
+  // }
   // searching (partial match)
-  const searchQuery = Student.find({
-    $or: studentSearchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: 'i' },
-    })),
-  });
+  // const searchQuery = Student.find({
+  //   $or: studentSearchableFields.map((field) => ({
+  //     [field]: { $regex: searchTerm, $options: 'i' },
+  //   })),
+  // });
 
   // filtering (actual match - key-value)
-  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-  excludeFields.forEach((elem) => delete queryObj[elem]);
-  const filteredQuery = searchQuery
-    .find(queryObj)
-    .populate('admissionSemester')
-    .populate({
-      path: 'academicDepartment',
-      populate: { path: 'academicFaculty' },
-    });
+  // const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  // excludeFields.forEach((elem) => delete queryObj[elem]);
+  // const filteredQuery = searchQuery
+  //   .find(queryObj)
+  //   .populate('admissionSemester')
+  //   .populate({
+  //     path: 'academicDepartment',
+  //     populate: { path: 'academicFaculty' },
+  //   });
   // sorting
   let sort = '-createdAt';
   if (query?.sort) {
