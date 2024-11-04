@@ -4,6 +4,8 @@ import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFields } from './student.constants';
 // get all students
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   // const queryObj = { ...query }; // Copying query object to avoid modifying the original.
@@ -54,6 +56,18 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   // }
   // const fieldsQuery = await limitQuery.select(fields);
   // return fieldsQuery;
+
+  // --------------------------------------------------------------------------
+  // IMPLEMENTING QUERY BUILDER CLASS
+  const studentQuery = new QueryBuilder(Student.find(), query)
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await studentQuery.modelQuery;
+  return result;
 };
 
 // get a single student
