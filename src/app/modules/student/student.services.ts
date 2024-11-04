@@ -8,21 +8,21 @@ import { TStudent } from './student.interface';
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   const queryObj = { ...query }; // Copying query object to avoid modifying the original.
   let searchTerm = '';
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
 
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
   // searching (partial match)
   const searchQuery = Student.find({
-    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+    $or: studentSearchableFields.map((field) => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
   });
 
   // filtering (actual match - key-value)
-  const excludeFields = ['searchTerm', 'sort', 'limit', 'page'];
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
   excludeFields.forEach((elem) => delete queryObj[elem]);
-  console.log({ query }, { queryObj });
   const filteredQuery = searchQuery
     .find(queryObj)
     .populate('admissionSemester')
@@ -37,7 +37,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   }
   const sortQuery = filteredQuery.sort(sort);
 
-  // limit, page, and skip
+  // limit, page, and skip for pagination
   let limit = 1;
   let page = 1;
   let skip = 0;
@@ -52,8 +52,16 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 
   const paginateQuery = sortQuery.skip(skip);
 
-  const limitQuery = await paginateQuery.limit(limit);
-  return limitQuery;
+  const limitQuery = paginateQuery.limit(limit);
+
+  // limiting fields
+  let fields = '-__v';
+  if (query?.fields) {
+    fields = (query.fields as string).split(',').join(' ');
+  }
+
+  const fieldsQuery = await limitQuery.select(fields);
+  return fieldsQuery;
 };
 
 // get a single student
