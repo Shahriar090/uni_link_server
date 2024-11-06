@@ -19,4 +19,14 @@ const getAllFacultiesFromDb = async (query: Record<string, unknown>) => {
   return result;
 };
 
-export const facultyServices = { getAllFacultiesFromDb };
+// get single faculty
+
+const getSingleFacultyFromDb = async (id: string) => {
+  const result = await Faculty.findById(id).populate('academicDepartment');
+  return result;
+};
+
+export const facultyServices = {
+  getAllFacultiesFromDb,
+  getSingleFacultyFromDb,
+};
