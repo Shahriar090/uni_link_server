@@ -5,9 +5,12 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateStudentId } from './user.utils';
+import { generateFacultyId, generateStudentId } from './user.utils';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
+import { TFaculty } from '../faculty/faculty.interface';
+import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
+import Faculty from '../faculty/faculty.model';
 
 // create student
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
@@ -67,4 +70,61 @@ const createStudentIntoDb = async (password: string, payload: TStudent) => {
   }
 };
 
-export const userServices = { createStudentIntoDb };
+// create faculty
+const createFacultyIntoDb = async (password: string, payload: TFaculty) => {
+  console.log('payload', payload);
+  let userData: Partial<TUser> = {};
+  userData.password = password || config.default_password;
+  userData.role = 'Faculty';
+
+  // find academic department info
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      'Academic Department Not Found',
+      '',
+    );
+  }
+
+  // start session
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    userData.id = await generateFacultyId();
+
+    // transaction 1
+    const newUser = await User.create([userData], { session });
+
+    // creating faculty
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Create User', '');
+    }
+
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; //reference id
+
+    // creating faculty => transaction 2
+    const newFaculty = await Faculty.create([payload], { session });
+    if (!newFaculty.length) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed To Create Faculty',
+        '',
+      );
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return newFaculty;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+export const userServices = { createStudentIntoDb, createFacultyIntoDb };
