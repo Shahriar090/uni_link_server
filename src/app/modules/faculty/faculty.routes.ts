@@ -15,4 +15,7 @@ facultyRouter
     facultyControllers.updateFaculty,
   );
 
+//   delete faculty
+facultyRouter.route('/:id').delete(facultyControllers.deleteFaculty);
+
 export const facultyRoutes = facultyRouter;
