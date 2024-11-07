@@ -1,10 +1,13 @@
 // get all faculty
 
+import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { FacultySearchableFields } from './faculty.constant';
 import { TFaculty } from './faculty.interface';
 import Faculty from './faculty.model';
-
+import AppError from '../../errors/appError';
+import httpStatus from 'http-status-codes';
+import { User } from '../user/user.model';
 const getAllFacultiesFromDb = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
     Faculty.find().populate('academicDepartment'),
@@ -50,8 +53,54 @@ const updateFacultyIntoDb = async (id: string, payload: Partial<TFaculty>) => {
   return result;
 };
 
+// delete faculty
+const deleteFacultyFromDb = async (id: string) => {
+  const session = await mongoose.startSession();
+  try {
+    const deletedFaculty = await Faculty.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: true,
+      },
+      { new: true, session },
+    );
+
+    if (!deletedFaculty) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed To Delete Faculty',
+        '',
+      );
+    }
+
+    const userId = deletedFaculty.user;
+
+    const deletedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        isDeleted: true,
+      },
+      { new: true, session },
+    );
+
+    if (!deletedUser) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Delete User', '');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedFaculty;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+
 export const facultyServices = {
   getAllFacultiesFromDb,
   getSingleFacultyFromDb,
   updateFacultyIntoDb,
+  deleteFacultyFromDb,
 };
