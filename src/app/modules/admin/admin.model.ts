@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { AdminModel, TAdmin, TUserName } from './admin.interface';
-import { bloodGroup, Gender } from './admin.constant';
+import { BloodGroup, Gender } from './admin.constant';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -64,7 +64,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     bloodGroup: {
       type: String,
       enum: {
-        values: bloodGroup,
+        values: BloodGroup,
         message: '{VALUE} Is Not A Valid Blood Group',
       },
     },
