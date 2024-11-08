@@ -1,5 +1,3 @@
-// get all faculty
-
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { FacultySearchableFields } from './faculty.constant';
@@ -8,6 +6,8 @@ import Faculty from './faculty.model';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
 import { User } from '../user/user.model';
+
+// get all faculty
 const getAllFacultiesFromDb = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
     Faculty.find().populate('academicDepartment'),
