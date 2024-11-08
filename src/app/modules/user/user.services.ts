@@ -5,13 +5,18 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status-codes';
 import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import Faculty from '../faculty/faculty.model';
 import { TAdmin } from '../admin/admin.interface';
+import { Admin } from '../admin/admin.model';
 
 // create student
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
@@ -142,7 +147,26 @@ const createAdminIntoDb = async (password: string, payload: TAdmin) => {
   try {
     session.startTransaction();
 
-    // TODO implement generate admin id
+    userData.id = await generateAdminId();
+    // create a user
+    const newUser = await User.create([userData], { session });
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Create User', '');
+    }
+
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; // reference id
+
+    // create a admin
+    const newAdmin = await Admin.create([payload], { session });
+    if (!newAdmin.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Create Admin', '');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return newAdmin;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
