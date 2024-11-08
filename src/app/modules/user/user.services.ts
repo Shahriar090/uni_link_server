@@ -11,6 +11,7 @@ import httpStatus from 'http-status-codes';
 import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import Faculty from '../faculty/faculty.model';
+import { TAdmin } from '../admin/admin.interface';
 
 // create student
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
@@ -127,4 +128,29 @@ const createFacultyIntoDb = async (password: string, payload: TFaculty) => {
     throw new Error(err);
   }
 };
-export const userServices = { createStudentIntoDb, createFacultyIntoDb };
+
+// create admin
+const createAdminIntoDb = async (password: string, payload: TAdmin) => {
+  const userData: Partial<TUser> = {};
+
+  userData.password = password || config.default_password;
+
+  userData.role = 'Admin';
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // TODO implement generate admin id
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+export const userServices = {
+  createStudentIntoDb,
+  createFacultyIntoDb,
+  createAdminIntoDb,
+};
