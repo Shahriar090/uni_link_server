@@ -21,7 +21,7 @@ userRouter
   );
 
 userRouter
-  .route('/create-admins')
+  .route('/create-admin')
   .post(
     validateRequest(adminValidations.createAdminValidationSchema),
     userControllers.createAdmin,
