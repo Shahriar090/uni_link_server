@@ -18,3 +18,6 @@ adminRouter
     validateRequest(adminValidations.updateAdminValidationSchema),
     adminControllers.updateAdmin,
   );
+
+// delete admin
+adminRouter.route('/:id').delete(adminControllers.deleteAdmin);
