@@ -80,7 +80,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 
 // get a single student
 const getSingleStudentFromDb = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -119,7 +119,7 @@ const updateStudentIntoDb = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -153,8 +153,8 @@ const deleteStudentFromDb = async (id: string) => {
       );
     }
     // deleting student (soft delete)
-    const deletedStudent = await Student.findOneAndUpdate(
-      { id },
+    const deletedStudent = await Student.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
@@ -167,9 +167,12 @@ const deleteStudentFromDb = async (id: string) => {
       );
     }
 
+    // find user id from deleted student
+    const userId = deletedStudent.user;
+
     // deleting user (soft delete)
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const deletedUser = await User.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session },
     );
