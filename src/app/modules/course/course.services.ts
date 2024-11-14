@@ -1,8 +1,9 @@
+import { TCourse } from './course.interface';
 import { Course } from './course.model';
 
 // create course
-const createCourseIntoDb = async () => {
-  const result = await Course.create();
+const createCourseIntoDb = async (payload: TCourse) => {
+  const result = await Course.create(payload);
   return result;
 };
 
@@ -17,6 +18,8 @@ const getSingleCourseFromDb = async (id: string) => {
   const result = await Course.findById(id);
   return result;
 };
+
+// TODO => Implement Update course
 
 // delete a course
 const deleteCourseFromDb = async (id: string) => {
