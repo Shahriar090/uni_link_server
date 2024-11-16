@@ -37,7 +37,11 @@ const getSingleCourse = catchAsync(async (req, res) => {
   });
 });
 
-// TODO => Implement Update course
+// update a course
+
+const updateCourse = catchAsync(async (req, res) => {
+  const { id } = req.params;
+});
 
 // delete a course
 const deleteCourse = catchAsync(async (req, res) => {
@@ -56,5 +60,6 @@ export const courseControllers = {
   createCourse,
   getAllCourses,
   getSingleCourse,
+  updateCourse,
   deleteCourse,
 };

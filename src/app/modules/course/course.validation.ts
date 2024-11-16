@@ -16,6 +16,10 @@ const createCourseValidationSchema = z.object({
   }),
 });
 
+// update validation schema
+const updateCourseValidationSchema = createCourseValidationSchema.partial();
+
 export const courseValidations = {
   createCourseValidationSchema,
+  updateCourseValidationSchema,
 };

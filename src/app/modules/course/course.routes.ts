@@ -18,6 +18,14 @@ courseRouter.route('/').get(courseControllers.getAllCourses);
 // get single
 courseRouter.route('/:id').get(courseControllers.getSingleCourse);
 
+// update a course
+courseRouter
+  .route('/:id')
+  .patch(
+    validateRequest(courseValidations.updateCourseValidationSchema),
+    courseControllers.updateCourse,
+  );
+
 // delete one
 courseRouter.route('/:id').delete(courseControllers.deleteCourse);
 
