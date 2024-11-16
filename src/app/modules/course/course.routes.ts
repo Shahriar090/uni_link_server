@@ -16,7 +16,7 @@ courseRouter
 courseRouter.route('/').get(courseControllers.getAllCourses);
 
 // get single
-courseRouter.route('/:id').get(courseControllers.getAllCourses);
+courseRouter.route('/:id').get(courseControllers.getSingleCourse);
 
 // delete one
 courseRouter.route('/:id').delete(courseControllers.deleteCourse);
