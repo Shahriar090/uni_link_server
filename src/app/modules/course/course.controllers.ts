@@ -41,6 +41,14 @@ const getSingleCourse = catchAsync(async (req, res) => {
 
 const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
+  const result = await courseServices.updateCourseIntoDb(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Course Updated Successfully',
+    data: result,
+  });
 });
 
 // delete a course
