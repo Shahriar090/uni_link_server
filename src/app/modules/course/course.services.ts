@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { courseSearchableFields } from './course.constants';
-import { TCourse } from './course.interface';
+import { TCourse, TCourseFaculty } from './course.interface';
 import { Course } from './course.model';
 import httpStatus from 'http-status-codes';
 import AppError from '../../errors/appError';
@@ -119,7 +119,7 @@ const updateCourseIntoDb = async (id: string, payload: Partial<TCourse>) => {
 };
 
 // assign faculty
-const assignFacultyIntoDb = async (id: string, payload: any) => {};
+const assignFacultyIntoDb = async (id: string, payload: TCourseFaculty) => {};
 
 // delete a course
 const deleteCourseFromDb = async (id: string) => {
