@@ -26,6 +26,10 @@ courseRouter
     courseControllers.updateCourse,
   );
 
+courseRouter
+  .route('/:courseId/assign-faculties')
+  .put(courseControllers.assignFaculties);
+
 // delete one
 courseRouter.route('/:id').delete(courseControllers.deleteCourse);
 

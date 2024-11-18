@@ -118,6 +118,9 @@ const updateCourseIntoDb = async (id: string, payload: Partial<TCourse>) => {
   }
 };
 
+// assign faculty
+const assignFacultyIntoDb = async (id: string, payload: any) => {};
+
 // delete a course
 const deleteCourseFromDb = async (id: string) => {
   const result = await Course.findByIdAndUpdate(
@@ -132,5 +135,6 @@ export const courseServices = {
   getAllCoursesFromDb,
   getSingleCourseFromDb,
   updateCourseIntoDb,
+  assignFacultyIntoDb,
   deleteCourseFromDb,
 };
