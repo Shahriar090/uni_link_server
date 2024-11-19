@@ -54,7 +54,7 @@ const updateCourse = catchAsync(async (req, res) => {
 // update => assign faculty
 const assignFacultiesWithCourse = catchAsync(async (req, res) => {
   const { courseId } = req.params;
-  const faculties = req.body;
+  const { faculties } = req.body;
   const result = await courseServices.assignFacultiesWithCourseIntoDb(
     courseId,
     faculties,
