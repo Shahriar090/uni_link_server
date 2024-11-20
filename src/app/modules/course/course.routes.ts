@@ -26,13 +26,20 @@ courseRouter
     courseControllers.updateCourse,
   );
 
+// assign faculties to course
 courseRouter
   .route('/:courseId/assign-faculties')
   .put(
-    validateRequest(
-      courseValidations.assignFacultiesWithCourseValidationSchema,
-    ),
+    validateRequest(courseValidations.facultiesWithCourseValidationSchema),
     courseControllers.assignFacultiesWithCourse,
+  );
+
+// remove faculties from course
+courseRouter
+  .route('/:courseId/remove-faculties')
+  .delete(
+    validateRequest(courseValidations.facultiesWithCourseValidationSchema),
+    courseControllers.removeFacultiesFromCourse,
   );
 
 // delete one
