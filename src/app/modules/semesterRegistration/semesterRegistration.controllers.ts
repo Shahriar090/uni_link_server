@@ -1,8 +1,22 @@
 import httpStatus from 'http-status-codes';
 import { catchAsync } from '../../utils/catchAsync';
+import { semesterRegistrationServices } from './semesterRegistration.services';
+import { sendResponse } from '../../utils/sendResponse';
 
 // create
-const createSemesterRegistration = catchAsync(async (req, res) => {});
+const createSemesterRegistration = catchAsync(async (req, res) => {
+  const result =
+    await semesterRegistrationServices.createSemesterRegistrationIntoDb(
+      req.body,
+    );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Semester Registration Successful',
+    data: result,
+  });
+});
 
 // get all
 const getAllSemesterRegistration = catchAsync(async (req, res) => {});
