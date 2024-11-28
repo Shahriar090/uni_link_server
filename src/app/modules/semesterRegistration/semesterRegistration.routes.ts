@@ -27,6 +27,11 @@ router
 //   update
 router
   .route('/:id')
-  .patch(semesterRegistrationControllers.updateSemesterRegistration);
+  .patch(
+    validateRequest(
+      semesterRegistrationValidations.updateSemesterRegistrationValidationSchema,
+    ),
+    semesterRegistrationControllers.updateSemesterRegistration,
+  );
 
 export const semesterRegistrationRoutes = router;
