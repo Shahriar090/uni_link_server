@@ -76,7 +76,22 @@ const getSingleSemesterRegistrationFromDb = async (id: string) => {
 };
 
 // update
-const updateSemesterRegistrationIntoDb = async (id: string) => {};
+const updateSemesterRegistrationIntoDb = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>,
+) => {
+  // if the requested semester registration is already ended, nothing will be updated
+
+  const requestedSemester = await SemesterRegistration.findById(id);
+
+  if (requestedSemester?.status === 'ENDED') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `This Semester Is Already ${requestedSemester?.status}`,
+      '',
+    );
+  }
+};
 
 export const semesterRegistrationServices = {
   createSemesterRegistrationIntoDb,
