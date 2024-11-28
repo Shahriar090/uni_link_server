@@ -8,6 +8,20 @@ import QueryBuilder from '../../builder/QueryBuilder';
 const createSemesterRegistrationIntoDb = async (
   payload: TSemesterRegistration,
 ) => {
+  // check if there any registered semester that is already upcoming or ongoing
+  const isThereAnyUpcomingOrOngoingSemester =
+    await SemesterRegistration.findOne({
+      $or: [{ status: 'UPCOMING' }, { status: 'ONGOING' }],
+    });
+
+  if (isThereAnyUpcomingOrOngoingSemester) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `There Is Already An ${isThereAnyUpcomingOrOngoingSemester.status} Registered Semester!`,
+      '',
+    );
+  }
+
   // check if the semester already exist
   const academicSemester = payload?.academicSemester;
 
@@ -62,7 +76,7 @@ const getSingleSemesterRegistrationFromDb = async (id: string) => {
 };
 
 // update
-const updateSemesterRegistrationIntoDb = async () => {};
+const updateSemesterRegistrationIntoDb = async (id: string) => {};
 
 export const semesterRegistrationServices = {
   createSemesterRegistrationIntoDb,
