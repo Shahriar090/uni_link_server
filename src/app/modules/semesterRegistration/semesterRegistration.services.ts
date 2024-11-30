@@ -89,12 +89,32 @@ const updateSemesterRegistrationIntoDb = async (
 
   // if the requested semester registration is already ended, nothing will be updated
 
-  const currentSemesterStatus = isSemesterRegistrationExist.status;
-
+  const currentSemesterStatus = isSemesterRegistrationExist?.status;
   if (currentSemesterStatus === 'ENDED') {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       `This Semester Is Already ${currentSemesterStatus}`,
+      '',
+    );
+  }
+
+  // Status Updating Flow => UPCOMING => ONGOING => ENDED
+
+  // preventing update upcoming to ended
+  const requestedStatus = payload?.status;
+  if (currentSemesterStatus === 'UPCOMING' && requestedStatus === 'ENDED') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You Cannot Update Status Directly ${currentSemesterStatus} To ${requestedStatus}`,
+      '',
+    );
+  }
+
+  // preventing update ongoing to upcoming
+  if (currentSemesterStatus === 'ONGOING' && requestedStatus === 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You Cannot Update Status Directly ${currentSemesterStatus} To ${requestedStatus}`,
       '',
     );
   }
