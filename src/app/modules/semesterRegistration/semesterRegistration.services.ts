@@ -4,6 +4,7 @@ import { TSemesterRegistration } from './semesterRegistration.interface';
 import httpStatus from 'http-status-codes';
 import { SemesterRegistration } from './semesterRegistration.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { registrationStatus } from './semesterRegistration.constants';
 // create
 const createSemesterRegistrationIntoDb = async (
   payload: TSemesterRegistration,
@@ -90,7 +91,7 @@ const updateSemesterRegistrationIntoDb = async (
   // if the requested semester registration is already ended, nothing will be updated
 
   const currentSemesterStatus = isSemesterRegistrationExist?.status;
-  if (currentSemesterStatus === 'ENDED') {
+  if (currentSemesterStatus === registrationStatus.ENDED) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       `This Semester Is Already ${currentSemesterStatus}`,
@@ -102,7 +103,10 @@ const updateSemesterRegistrationIntoDb = async (
 
   // preventing update upcoming to ended
   const requestedStatus = payload?.status;
-  if (currentSemesterStatus === 'UPCOMING' && requestedStatus === 'ENDED') {
+  if (
+    currentSemesterStatus === registrationStatus.UPCOMING &&
+    requestedStatus === registrationStatus.ENDED
+  ) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       `You Cannot Update Status Directly ${currentSemesterStatus} To ${requestedStatus}`,
@@ -111,7 +115,10 @@ const updateSemesterRegistrationIntoDb = async (
   }
 
   // preventing update ongoing to upcoming
-  if (currentSemesterStatus === 'ONGOING' && requestedStatus === 'UPCOMING') {
+  if (
+    currentSemesterStatus === registrationStatus.ONGOING &&
+    requestedStatus === registrationStatus.UPCOMING
+  ) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       `You Cannot Update Status Directly ${currentSemesterStatus} To ${requestedStatus}`,
