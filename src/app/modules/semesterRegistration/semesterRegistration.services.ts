@@ -12,7 +12,10 @@ const createSemesterRegistrationIntoDb = async (
   // check if there any registered semester that is already upcoming or ongoing
   const isThereAnyUpcomingOrOngoingSemester =
     await SemesterRegistration.findOne({
-      $or: [{ status: 'UPCOMING' }, { status: 'ONGOING' }],
+      $or: [
+        { status: registrationStatus.UPCOMING },
+        { status: registrationStatus.ONGOING },
+      ],
     });
 
   if (isThereAnyUpcomingOrOngoingSemester) {
