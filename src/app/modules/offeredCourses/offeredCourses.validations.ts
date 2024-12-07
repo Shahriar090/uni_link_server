@@ -2,30 +2,40 @@ import { z } from 'zod';
 import { Days } from './offeredCourses.constants';
 
 const createOfferedCoursesValidationSchema = z.object({
-  body: z.object({
-    semesterRegistration: z.string(),
-    academicFaculty: z.string(),
-    academicDepartment: z.string(),
-    course: z.string(),
-    faculty: z.string(),
-    section: z.number(),
-    maxCapacity: z.number(),
-    days: z.array(z.enum([...Days] as [string, ...string[]])),
-    startTime: z.string().refine(
-      (time) => {
-        const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-        return regex.test(time);
+  body: z
+    .object({
+      semesterRegistration: z.string(),
+      academicFaculty: z.string(),
+      academicDepartment: z.string(),
+      course: z.string(),
+      faculty: z.string(),
+      section: z.number(),
+      maxCapacity: z.number(),
+      days: z.array(z.enum([...Days] as [string, ...string[]])),
+      startTime: z.string().refine(
+        (time) => {
+          const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+          return regex.test(time);
+        },
+        { message: 'Invalid Time Format! Expected "HH:MM" In 24 Hours Format' },
+      ),
+      endTime: z.string().refine(
+        (time) => {
+          const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+          return regex.test(time);
+        },
+        { message: 'Invalid Time Format! Expected "HH:MM" In 24 Hours Format' },
+      ),
+    })
+    .refine(
+      (body) => {
+        const start = new Date(`1970-01-01T${body?.startTime}:00`);
+        const end = new Date(`1970-01-01T${body?.endTime}:00`);
+
+        return end > start;
       },
-      { message: 'Invalid Time Format! Expected "HH:MM" In 24 Hours Format' },
+      { message: 'Start Time Must Be Before End Time!' },
     ),
-    endTime: z.string().refine(
-      (time) => {
-        const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-        return regex.test(time);
-      },
-      { message: 'Invalid Time Format! Expected "HH:MM" In 24 Hours Format' },
-    ),
-  }),
 });
 
 const updateOfferedCoursesValidationSchema = z.object({
