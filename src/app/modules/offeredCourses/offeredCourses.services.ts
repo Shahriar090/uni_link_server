@@ -17,6 +17,9 @@ const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
     course,
     section,
     faculty,
+    days,
+    startTime,
+    endTime,
   } = payload;
 
   // check if the semester registration exists
@@ -96,6 +99,34 @@ const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
       '',
     );
   }
+
+  // get the schedules of faculties
+  // Resolving time conflicts to prevent assigning multiple tasks to a faculty member at the same time on a single day
+
+  const assignedSchedules = await OfferedCourses.find({
+    semesterRegistration,
+    faculty,
+    days: { $in: days },
+  }).select('days startTime endTime');
+  // console.log(assignedSchedules);
+
+  // new schedules
+  const newSchedules = { days, startTime, endTime };
+
+  assignedSchedules.forEach((schedule) => {
+    const existingStartTime = new Date(`1970-01-01T${schedule.startTime}`);
+    const existingEndTime = new Date(`1970-01-01T${schedule.endTime}`);
+    const newStartTime = new Date(`1970-01-01T${newSchedules.startTime}`);
+    const newEndTme = new Date(`1970-01-01T${newSchedules.endTime}`);
+
+    if (newStartTime < existingEndTime && newEndTme > existingStartTime) {
+      throw new AppError(
+        httpStatus.CONFLICT,
+        'This Faculty Is Not Available At That Time! Choose Another Time Or Day.',
+        '',
+      );
+    }
+  });
   const result = await OfferedCourses.create({ ...payload, academicSemester });
   return result;
 };
