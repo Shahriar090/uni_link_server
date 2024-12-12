@@ -128,7 +128,30 @@ const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
 const updateOfferedCourseIntoDb = async (
   id: string,
   payload: Partial<TOfferedCourses>,
-) => {};
+) => {
+  const { faculty } = payload;
+  // check if offered course exist or not
+  const isOfferedCourseExists = await OfferedCourses.findById(id);
+
+  if (!isOfferedCourseExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No Offered Course Found With This Id!',
+      '',
+    );
+  }
+
+  // check if the faculty exists or not
+  const isFacultyExists = await Faculty.findById(faculty);
+
+  if (!isFacultyExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No Faculty Found With This Id!',
+      '',
+    );
+  }
+};
 
 export const offeredCoursesServices = {
   createOfferedCourseIntoDb,
