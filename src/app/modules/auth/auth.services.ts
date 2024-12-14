@@ -2,6 +2,7 @@ import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import httpStatus from 'http-status-codes';
+import bcrypt from 'bcrypt';
 
 const loginUser = async (payload: TLoginUser) => {
   // check if the user is exists or not
@@ -27,6 +28,16 @@ const loginUser = async (payload: TLoginUser) => {
   if (userStatus === 'Blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
   }
+
+  // check hashed vs plain password
+  const isPasswordValid = await bcrypt.compare(
+    payload?.password,
+    isUserExists?.password,
+  );
+
+  console.log(isPasswordValid);
+
+  // access grunted. send access and refresh token
 
   return {};
 };
