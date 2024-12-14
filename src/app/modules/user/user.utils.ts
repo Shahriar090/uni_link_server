@@ -1,5 +1,4 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
-import { Admin } from '../admin/admin.model';
 import { User } from './user.model';
 
 // find last admitted student
@@ -77,6 +76,6 @@ export const generateAdminId = async () => {
     currentId = lastAdminId.substring(2);
   }
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
-  incrementId = `$A-${incrementId}`;
+  incrementId = `A-${incrementId}`;
   return incrementId;
 };
