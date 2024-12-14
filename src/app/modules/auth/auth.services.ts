@@ -6,15 +6,13 @@ import bcrypt from 'bcrypt';
 
 const loginUser = async (payload: TLoginUser) => {
   // check if the user is exists or not
-  const isUserExists = await User.findOne({ id: payload?.id });
-  console.log(isUserExists);
-
-  if (!isUserExists) {
+  const user = await User.isUserExistsByCustomId(payload?.id);
+  if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'No User Found With This Id!', '');
   }
 
   // check if the user is deleted
-  const isDeleted = isUserExists?.isDeleted;
+  const isDeleted = user?.isDeleted;
   if (isDeleted) {
     throw new AppError(
       httpStatus.NOT_FOUND,
@@ -24,18 +22,19 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   // check if the user is blocked
-  const userStatus = isUserExists?.status;
+  const userStatus = user?.status;
   if (userStatus === 'Blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
   }
 
   // check hashed vs plain password
-  const isPasswordValid = await bcrypt.compare(
-    payload?.password,
-    isUserExists?.password,
-  );
-
-  console.log(isPasswordValid);
+  if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'Your Password Did Not Matched!',
+      '',
+    );
+  }
 
   // access grunted. send access and refresh token
 
