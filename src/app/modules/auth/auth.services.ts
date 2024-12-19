@@ -1,8 +1,9 @@
+import config from '../../config';
 import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import httpStatus from 'http-status-codes';
-import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const loginUser = async (payload: TLoginUser) => {
   // check if the user is exists or not
@@ -37,8 +38,17 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   // access grunted. send access and refresh token
+  const jwtPayload = {
+    userId: user?.id,
+    userRole: user?.role,
+  };
 
-  return {};
+  const accessToken = jwt.sign(
+    jwtPayload,
+    config.access_token_secret as string,
+    { expiresIn: '2d' },
+  );
+  return { accessToken, needsPasswordChange: user?.needsPasswordChange };
 };
 
 export const authServices = { loginUser };
