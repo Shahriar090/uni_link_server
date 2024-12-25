@@ -14,4 +14,7 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
-export const authControllers = { loginUser };
+// change password
+const changePassword = catchAsync(async (req, res) => {});
+
+export const authControllers = { loginUser, changePassword };
