@@ -18,7 +18,7 @@ const createAcademicFaculty = catchAsync(async (req, res) => {
 });
 
 // get all
-const getAllAcademicFaculties = catchAsync(async (re, res) => {
+const getAllAcademicFaculties = catchAsync(async (req, res) => {
   const result = await academicFacultyServices.getAllAcademicFacultiesFromDb();
   sendResponse(res, {
     statusCode: httpStatus.OK,

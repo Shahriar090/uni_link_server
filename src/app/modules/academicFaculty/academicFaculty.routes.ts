@@ -3,6 +3,8 @@ import { academicFacultyControllers } from './academicFaculty.controllers';
 import { validateRequest } from '../../middlewares/validateRequest';
 import { academicFacultyValidations } from './academicFaculty.validation';
 import auth from '../../middlewares/auth';
+import { USER_ROLES } from '../user/user.constant';
+import { User } from '../user/user.model';
 const academicFacultyRouter = express.Router();
 //create
 academicFacultyRouter
@@ -17,7 +19,10 @@ academicFacultyRouter
 //get all
 academicFacultyRouter
   .route('/')
-  .get(auth(), academicFacultyControllers.getAllAcademicFaculties);
+  .get(
+    auth(USER_ROLES?.Admin),
+    academicFacultyControllers.getAllAcademicFaculties,
+  );
 
 //get single
 academicFacultyRouter

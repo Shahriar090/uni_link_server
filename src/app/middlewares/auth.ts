@@ -4,8 +4,9 @@ import httpStatus from 'http-status-codes';
 import AppError from '../errors/appError';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
+import { TUserRoles } from '../modules/user/user.interface';
 
-const auth = () => {
+const auth = (...requiredRoles: TUserRoles[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req?.headers?.authorization;
 
@@ -26,6 +27,14 @@ const auth = () => {
           'You Are Not Authorized! Your Token is Invalid/Expired',
           '',
         );
+      }
+
+      // check if user has required roles
+      if (
+        requiredRoles &&
+        !requiredRoles.includes((decoded as JwtPayload)?.userRole as TUserRoles)
+      ) {
+        throw new AppError(httpStatus.FORBIDDEN, 'You Are Not Authorized!', '');
       }
       req.user = decoded as JwtPayload;
     });
