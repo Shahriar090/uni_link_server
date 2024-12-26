@@ -5,6 +5,7 @@ import AppError from '../errors/appError';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRoles } from '../modules/user/user.interface';
+import { User } from '../modules/user/user.model';
 
 const auth = (...requiredRoles: TUserRoles[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -19,25 +20,53 @@ const auth = (...requiredRoles: TUserRoles[]) => {
       );
     }
 
-    // check if token is valid
-    jwt.verify(token, config?.access_token_secret as string, (err, decoded) => {
-      if (err) {
-        throw new AppError(
-          httpStatus.UNAUTHORIZED,
-          'You Are Not Authorized! Your Token is Invalid/Expired',
-          '',
-        );
-      }
+    // check if user has required roles
+    const decoded = jwt.verify(
+      token,
+      config?.access_token_secret as string,
+    ) as JwtPayload;
 
-      // check if user has required roles
-      if (
-        requiredRoles &&
-        !requiredRoles.includes((decoded as JwtPayload)?.userRole as TUserRoles)
-      ) {
-        throw new AppError(httpStatus.FORBIDDEN, 'You Are Not Authorized!', '');
-      }
-      req.user = decoded as JwtPayload;
-    });
+    const { userId, userRole, iat } = decoded;
+
+    // check if the user is exists or not
+    const user = await User.isUserExistsByCustomId(userId);
+    if (!user) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'No User Found With This Id!',
+        '',
+      );
+    }
+
+    // check if the user is deleted
+    const isDeleted = user?.isDeleted;
+    if (isDeleted) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'This User Is Already Deleted',
+        '',
+      );
+    }
+
+    // check if the user is blocked
+    const userStatus = user?.status;
+    if (userStatus === 'Blocked') {
+      throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
+    }
+
+    // check hashed vs plain password
+    if (!(await User.isPasswordMatched(decoded?.password, user?.password))) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'Your Password Did Not Matched!',
+        '',
+      );
+    }
+
+    if (requiredRoles && !requiredRoles.includes(userRole as TUserRoles)) {
+      throw new AppError(httpStatus.FORBIDDEN, 'You Are Not Authorized!', '');
+    }
+    req.user = decoded as JwtPayload;
     next();
   });
 };
