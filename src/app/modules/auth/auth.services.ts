@@ -122,4 +122,7 @@ const changePassword = async (
   return null;
 };
 
-export const authServices = { loginUser, changePassword };
+// refresh token
+const refreshToken = async () => {};
+
+export const authServices = { loginUser, changePassword, refreshToken };

@@ -5,6 +5,7 @@ import httpStatus from 'http-status-codes';
 
 // get all faculties
 const getAllFaculties = catchAsync(async (req, res) => {
+  console.log(req.cookies);
   const result = await facultyServices.getAllFacultiesFromDb(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,

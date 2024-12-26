@@ -35,4 +35,7 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
-export const authControllers = { loginUser, changePassword };
+// refresh token
+const refreshToken = catchAsync(async (req, res) => {});
+
+export const authControllers = { loginUser, changePassword, refreshToken };
