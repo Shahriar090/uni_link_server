@@ -123,6 +123,70 @@ const changePassword = async (
 };
 
 // refresh token
-const refreshToken = async () => {};
+const refreshToken = async (token: string) => {
+  // check if token is not provided
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You Are Not Authorized!', '');
+  }
+
+  // check if user has required roles
+  const decoded = jwt.verify(
+    token,
+    config?.refresh_token_secret as string,
+  ) as JwtPayload;
+
+  const { userId, iat } = decoded;
+
+  // check if the user is exists or not
+  const user = await User.isUserExistsByCustomId(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No User Found With This Id!', '');
+  }
+
+  // check if the user is deleted
+  const isDeleted = user?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This User Is Already Deleted',
+      '',
+    );
+  }
+
+  // check if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === 'Blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
+  }
+
+  // check if the jwt is issued before password change
+  if (
+    user?.passwordChangedAt &&
+    User.isJWTIssuedBeforePasswordChange(user?.passwordChangedAt, iat as number)
+  ) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Password Changed! Please Login Again',
+      '',
+    );
+  }
+
+  // send new access token
+
+  const jwtPayload = {
+    userId: user?.id,
+    userRole: user?.role,
+  };
+
+  const accessToken = generateJwtToken(
+    jwtPayload,
+    config.access_token_secret as string,
+    config.access_token_expiry as string,
+  );
+
+  return {
+    accessToken,
+  };
+};
 
 export const authServices = { loginUser, changePassword, refreshToken };
