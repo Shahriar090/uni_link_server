@@ -2,6 +2,7 @@ import { model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import { IUser, UserModel } from './user.interface';
+
 const userSchema = new Schema<IUser, UserModel>(
   {
     id: {

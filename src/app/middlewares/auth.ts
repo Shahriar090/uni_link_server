@@ -54,15 +54,6 @@ const auth = (...requiredRoles: TUserRoles[]) => {
       throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
     }
 
-    // check hashed vs plain password
-    if (!(await User.isPasswordMatched(decoded?.password, user?.password))) {
-      throw new AppError(
-        httpStatus.FORBIDDEN,
-        'Your Password Did Not Matched!',
-        '',
-      );
-    }
-
     if (requiredRoles && !requiredRoles.includes(userRole as TUserRoles)) {
       throw new AppError(httpStatus.FORBIDDEN, 'You Are Not Authorized!', '');
     }
