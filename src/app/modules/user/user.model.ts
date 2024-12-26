@@ -39,6 +39,7 @@ const userSchema = new Schema<IUser, UserModel>(
   { timestamps: true },
 );
 
+// pre save hook
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
@@ -47,10 +48,13 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// post save hook
 userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+
+// static methods for checking user exists, password match, jwt issued before password change
 
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
   return await User.findOne({ id }).select('+password');
@@ -62,6 +66,15 @@ userSchema.statics.isPasswordMatched = async function (
 ) {
   const result = await bcrypt.compare(plainPassword, hashedPassword);
   return result;
+};
+
+userSchema.statics.isJWTIssuedBeforePasswordChange = function (
+  passwordChangedTimeStamp: Date,
+  jwtIssuedTimeStamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimeStamp;
 };
 
 // user model
