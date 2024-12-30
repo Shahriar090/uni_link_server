@@ -189,4 +189,53 @@ const refreshToken = async (token: string) => {
   };
 };
 
-export const authServices = { loginUser, changePassword, refreshToken };
+// forget password
+const forgetPassword = async (userId: string) => {
+  // check if the user is exists or not
+  const user = await User.isUserExistsByCustomId(userId);
+  console.log('checking user', user);
+  if (!user) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No User Found With This User Id!',
+      '',
+    );
+  }
+
+  // check if the user is deleted
+  const isDeleted = user?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This User Is Already Deleted',
+      '',
+    );
+  }
+
+  // check if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === 'Blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
+  }
+
+  const jwtPayload = {
+    userId: user?.id,
+    userRole: user?.role,
+  };
+
+  const accessToken = generateJwtToken(
+    jwtPayload,
+    config.access_token_secret as string,
+    '10m',
+  );
+
+  const resetUiLink = `http://localhost:5173?id=${user?.id}&token=${accessToken}`;
+  console.log(resetUiLink);
+};
+
+export const authServices = {
+  loginUser,
+  changePassword,
+  refreshToken,
+  forgetPassword,
+};
