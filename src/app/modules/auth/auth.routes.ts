@@ -38,4 +38,12 @@ router
     authControllers.forgetPassword,
   );
 
+// reset password route
+router
+  .route('/reset-password')
+  .post(
+    validateRequest(authValidation.resetPasswordValidationSchema),
+    authControllers.resetPassword,
+  );
+
 export const AuthRoutes = router;

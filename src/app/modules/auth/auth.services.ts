@@ -194,7 +194,6 @@ const refreshToken = async (token: string) => {
 const forgetPassword = async (userId: string) => {
   // check if the user is exists or not
   const user = await User.isUserExistsByCustomId(userId);
-  console.log('checking user', user);
   if (!user) {
     throw new AppError(
       httpStatus.NOT_FOUND,
@@ -236,9 +235,69 @@ const forgetPassword = async (userId: string) => {
   sendEmail(user?.email, resetPasswordLink);
 };
 
+// reset password
+const resetPassword = async (
+  payload: { id: string; newPassword: string },
+  token: string,
+) => {
+  // check if the user is exists or not
+  const user = await User.isUserExistsByCustomId(payload?.id);
+  if (!user) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No User Found With This User Id!',
+      '',
+    );
+  }
+
+  // check if the user is deleted
+  const isDeleted = user?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This User Is Already Deleted',
+      '',
+    );
+  }
+
+  // check if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === 'Blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This User Is Blocked!', '');
+  }
+
+  // verify the token
+  const decoded = jwt.verify(
+    token,
+    config.access_token_secret as string,
+  ) as JwtPayload;
+
+  // check if decoded token's id and payload's id is same
+  if (payload?.id !== decoded?.userId) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You Are Not Authorized!', '');
+  }
+
+  // hash the new password
+  const newHashedPassword = await bcrypt.hash(
+    payload?.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  // save new password into DB
+  await User.findOneAndUpdate(
+    { id: decoded.userId, role: decoded.userRole },
+    {
+      password: newHashedPassword,
+      needsPasswordChange: false,
+      passwordChangedAt: new Date(),
+    },
+  );
+};
+
 export const authServices = {
   loginUser,
   changePassword,
   refreshToken,
   forgetPassword,
+  resetPassword,
 };
