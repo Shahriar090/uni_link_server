@@ -177,8 +177,12 @@ const createAdminIntoDb = async (password: string, payload: TAdmin) => {
     throw new Error(err);
   }
 };
+
+// get me
+const getMe = async () => {};
 export const userServices = {
   createStudentIntoDb,
   createFacultyIntoDb,
   createAdminIntoDb,
+  getMe,
 };

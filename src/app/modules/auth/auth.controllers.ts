@@ -72,6 +72,7 @@ const resetPassword = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 export const authControllers = {
   loginUser,
   changePassword,

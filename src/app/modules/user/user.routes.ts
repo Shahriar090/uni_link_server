@@ -7,7 +7,7 @@ import { adminValidations } from '../admin/admin.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLES } from './user.constant';
 const userRouter = express.Router();
-
+// create student
 userRouter
   .route('/create-student')
   .post(
@@ -16,6 +16,7 @@ userRouter
     userControllers.createStudent,
   );
 
+// create faculty
 userRouter
   .route('/create-faculty')
   .post(
@@ -24,11 +25,20 @@ userRouter
     userControllers.createFaculty,
   );
 
+// create admin
 userRouter
   .route('/create-admin')
   .post(
     validateRequest(adminValidations.createAdminValidationSchema),
     userControllers.createAdmin,
+  );
+
+// get me
+userRouter
+  .route('/me')
+  .get(
+    auth(USER_ROLES.Admin, USER_ROLES.Faculty, USER_ROLES.Student),
+    userControllers.getMe,
   );
 
 export const userRoutes = userRouter;

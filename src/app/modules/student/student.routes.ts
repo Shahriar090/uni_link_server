@@ -11,7 +11,7 @@ studentRouter.route('/').get(studentControllers.getAllStudents);
 studentRouter
   .route('/:studentId')
   .get(
-    auth(USER_ROLES.Admin, USER_ROLES.Faculty, USER_ROLES.Student),
+    auth(USER_ROLES.Admin, USER_ROLES.Faculty),
     studentControllers.getSingleStudent,
   );
 studentRouter
