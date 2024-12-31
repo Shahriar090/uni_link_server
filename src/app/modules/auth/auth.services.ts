@@ -5,7 +5,7 @@ import { TLoginUser } from './auth.interface';
 import httpStatus from 'http-status-codes';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { generateJwtToken } from './auth.utils';
+import { generateJwtToken, verifyJwtToken } from './auth.utils';
 import { sendEmail } from '../../utils/sendEmail';
 
 const loginUser = async (payload: TLoginUser) => {
@@ -131,10 +131,7 @@ const refreshToken = async (token: string) => {
   }
 
   // check if user has required roles
-  const decoded = jwt.verify(
-    token,
-    config?.refresh_token_secret as string,
-  ) as JwtPayload;
+  const decoded = verifyJwtToken(token, config.refresh_token_secret as string);
 
   const { userId, iat } = decoded;
 
@@ -267,10 +264,8 @@ const resetPassword = async (
   }
 
   // verify the token
-  const decoded = jwt.verify(
-    token,
-    config.access_token_secret as string,
-  ) as JwtPayload;
+
+  const decoded = verifyJwtToken(token, config.access_token_secret as string);
 
   // check if decoded token's id and payload's id is same
   if (payload?.id !== decoded?.userId) {

@@ -2,6 +2,7 @@ import { userServices } from './user.services';
 import httpStatus from 'http-status-codes';
 import { sendResponse } from '../../utils/sendResponse';
 import { catchAsync } from '../../utils/catchAsync';
+import AppError from '../../errors/appError';
 
 // create a student
 const createStudent = catchAsync(async (req, res) => {
@@ -42,7 +43,21 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 // get me
-const getMe = catchAsync(async (req, res) => {});
+const getMe = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Token Is Required', '');
+  }
+
+  const result = await userServices.getMe(token);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Information Retrieved Successfully',
+    data: result,
+  });
+});
 
 export const userControllers = {
   createStudent,
