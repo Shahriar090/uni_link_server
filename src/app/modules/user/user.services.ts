@@ -180,10 +180,7 @@ const createAdminIntoDb = async (password: string, payload: TAdmin) => {
 };
 
 // get me
-const getMe = async (token: string) => {
-  const decoded = verifyJwtToken(token, config.access_token_secret as string);
-  const { userId, userRole } = decoded;
-
+const getMe = async (userId: string, userRole: string) => {
   let result = null;
 
   if (userRole === 'Student') {
