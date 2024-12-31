@@ -184,15 +184,25 @@ const getMe = async (userId: string, userRole: string) => {
   let result = null;
 
   if (userRole === 'Student') {
-    result = await Student.findOne({ id: userId });
+    result = await Student.findOne({ id: userId }).populate('user');
   }
   if (userRole === 'Faculty') {
-    result = await Faculty.findOne({ id: userId });
+    result = await Faculty.findOne({ id: userId }).populate('user');
   }
   if (userRole === 'Admin') {
-    result = await Admin.findOne({ id: userId });
+    result = await Admin.findOne({ id: userId }).populate('user');
   }
 
+  return result;
+};
+
+// change status
+const changeStatus = async (id: string, payload: { status: string }) => {
+  const result = await User.findByIdAndUpdate(
+    id,
+    { status: payload.status },
+    { new: true },
+  );
   return result;
 };
 export const userServices = {
@@ -200,4 +210,5 @@ export const userServices = {
   createFacultyIntoDb,
   createAdminIntoDb,
   getMe,
+  changeStatus,
 };
