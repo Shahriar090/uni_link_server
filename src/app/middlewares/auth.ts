@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRoles } from '../modules/user/user.interface';
 import { User } from '../modules/user/user.model';
+import { verifyJwtToken } from '../modules/auth/auth.utils';
 
 const auth = (...requiredRoles: TUserRoles[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -21,10 +22,10 @@ const auth = (...requiredRoles: TUserRoles[]) => {
     }
 
     // check if user has required roles
-    const decoded = jwt.verify(
+    const decoded = verifyJwtToken(
       token,
       config?.access_token_secret as string,
-    ) as JwtPayload;
+    );
 
     const { userId, userRole, iat } = decoded;
 
