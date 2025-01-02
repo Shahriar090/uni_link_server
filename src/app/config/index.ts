@@ -14,4 +14,7 @@ export default {
   access_token_expiry: process.env.ACCESS_TOKEN_EXPIRY,
   refresh_token_expiry: process.env.REFRESH_TOKEN_EXPIRY,
   reset_password_link: process.env.RESET_PASSWORD_LINK,
+  cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+  cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
 };

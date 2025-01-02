@@ -29,7 +29,8 @@ const createStudentValidationSchema = z.object({
     password: z
       .string()
       .max(20, 'Password Cannot Be More Than 20 Characters')
-      .min(6, 'Password Cannot Be Less Than 6 Characters'),
+      .min(6, 'Password Cannot Be Less Than 6 Characters')
+      .optional(),
     student: z.object({
       name: createUserNameValidationSchema,
       email: z
@@ -53,7 +54,7 @@ const createStudentValidationSchema = z.object({
       guardian: createGuardianValidationSchema,
       localGuardian: createLocalGuardianValidationSchema,
       admissionSemester: z.string(),
-      profileImage: z.string().optional(),
+      // profileImage: z.string().optional(), // image will be uploaded separately
     }),
   }),
 });
