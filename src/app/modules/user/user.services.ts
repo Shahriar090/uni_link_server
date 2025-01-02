@@ -20,7 +20,11 @@ import { IUser } from './user.interface';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 // create student
-const createStudentIntoDb = async (password: string, payload: TStudent) => {
+const createStudentIntoDb = async (
+  file: any,
+  password: string,
+  payload: TStudent,
+) => {
   //   create an user object
   let userInfo: Partial<IUser> = {};
 
@@ -45,16 +49,22 @@ const createStudentIntoDb = async (password: string, payload: TStudent) => {
     //  generating id dynamically
     userInfo.id = await generateStudentId(admissionSemester!);
 
+    // image name and image path
+    const imageName = `${userInfo.id}-${payload?.name?.firstName}-${payload?.name?.middleName}-${payload?.name?.lastName}`;
+    const imagePath = file.path;
+
     // send image to cloudinary
-    await sendImageToCloudinary();
+    const userProfileImg = await sendImageToCloudinary(imageName, imagePath);
+    const { secure_url } = userProfileImg as any;
     //   creating a user
     const newUser = await User.create([userInfo], { session });
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'User Creation Failed', '');
     } else {
-      // set id and _id as user
+      // set id, user reference id and image url
       payload.id = newUser[0].id; //embedding id
       payload.user = newUser[0]._id; //reference id
+      payload.profileImage = secure_url;
 
       // creating new student
       // second transaction
