@@ -91,7 +91,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
     default: 'N/A',
   },
   gradePoints: {
-    typs: Number,
+    type: Number,
     min: 0,
     max: 4,
     default: 0,

@@ -4,6 +4,7 @@ import { Student } from '../student/student.model';
 import { TEnrolledCourse } from './enrolledCourse.interface';
 import httpStatusCodes from 'http-status-codes';
 import EnrolledCourse from './enrolledCourse.model';
+import mongoose from 'mongoose';
 
 const createEnrolledCourseIntoDb = async (
   userId: string,
@@ -40,6 +41,55 @@ const createEnrolledCourseIntoDb = async (
     throw new AppError(
       httpStatusCodes.CONFLICT,
       'Student Already Enrolled',
+      '',
+    );
+  }
+
+  // start transaction
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    // create the enrolled course
+    const result = await EnrolledCourse.create(
+      [
+        {
+          semesterRegistration: isOfferedCourseExists?.semesterRegistration,
+          academicSemester: isOfferedCourseExists?.academicSemester,
+          academicFaculty: isOfferedCourseExists?.academicFaculty,
+          academicDepartment: isOfferedCourseExists?.academicDepartment,
+          offeredCourse: offeredCourse,
+          course: isOfferedCourseExists?.course,
+          student: student._id,
+          faculty: isOfferedCourseExists?.faculty,
+          isEnrolled: true,
+        },
+      ],
+      { session },
+    );
+
+    if (!result) {
+      throw new AppError(
+        httpStatusCodes.BAD_REQUEST,
+        'Course Enrollment Failed',
+        '',
+      );
+    }
+
+    // decrement the max capacity of the course
+    const maxCapacity = isOfferedCourseExists?.maxCapacity;
+    await OfferedCourses.findByIdAndUpdate(offeredCourse, {
+      maxCapacity: maxCapacity - 1,
+    });
+    await session.commitTransaction();
+    await session.endSession();
+    return result;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(
+      httpStatusCodes.INTERNAL_SERVER_ERROR,
+      error.message,
       '',
     );
   }
