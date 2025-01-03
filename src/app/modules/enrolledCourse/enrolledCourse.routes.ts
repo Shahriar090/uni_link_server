@@ -1,7 +1,7 @@
 import express from 'express';
 import { validateRequest } from '../../middlewares/validateRequest';
 import { EnrolledCourseValidations } from './enrolledCourse.validations';
-import { EnrolledCourseControllers } from './enrolledCourse.controllers';
+import { enrolledCourseControllers } from './enrolledCourse.controllers';
 import auth from '../../middlewares/auth';
 import { USER_ROLES } from '../user/user.constant';
 const router = express.Router();
@@ -14,7 +14,7 @@ router
     validateRequest(
       EnrolledCourseValidations.createEnrolledCourseValidationSchema,
     ),
-    EnrolledCourseControllers.createEnrolledCourse,
+    enrolledCourseControllers.createEnrolledCourse,
   );
 
 //   --------------
