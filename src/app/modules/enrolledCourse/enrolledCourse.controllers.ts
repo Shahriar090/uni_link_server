@@ -20,15 +20,16 @@ const createEnrolledCourse = catchAsync(async (req, res) => {
 
 // update enrolled course
 const updateEnrolledCourse = catchAsync(async (req, res) => {
-  console.log(req.user);
-  // const result = await enrolledCourseServices.updateEnrolledCourseIntoDb(
-  //   req.body,
-  // );
+  const { facultyId } = req.user;
+  const result = await enrolledCourseServices.updateEnrolledCourseIntoDb(
+    req.body,
+    facultyId,
+  );
   sendResponse(res, {
     statusCode: httpStatusCodes.OK,
     success: true,
     message: 'Enrolled Course Updated Successfully',
-    data: null,
+    data: result,
   });
 });
 
