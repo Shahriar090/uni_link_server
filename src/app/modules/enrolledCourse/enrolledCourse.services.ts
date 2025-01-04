@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Course } from '../course/course.model';
 
+// create enrolled course into db
 const createEnrolledCourseIntoDb = async (
   userId: string,
   payload: TEnrolledCourse,
@@ -153,4 +154,12 @@ const createEnrolledCourseIntoDb = async (
   }
 };
 
-export const enrolledCourseServices = { createEnrolledCourseIntoDb };
+// update enrolled course
+const updateEnrolledCourseIntoDb = async (
+  payload: Partial<TEnrolledCourse>,
+) => {};
+
+export const enrolledCourseServices = {
+  createEnrolledCourseIntoDb,
+  updateEnrolledCourseIntoDb,
+};

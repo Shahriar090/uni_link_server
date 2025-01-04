@@ -1,6 +1,6 @@
 import express from 'express';
 import { validateRequest } from '../../middlewares/validateRequest';
-import { EnrolledCourseValidations } from './enrolledCourse.validations';
+import { enrolledCourseValidations } from './enrolledCourse.validations';
 import { enrolledCourseControllers } from './enrolledCourse.controllers';
 import auth from '../../middlewares/auth';
 import { USER_ROLES } from '../user/user.constant';
@@ -12,10 +12,20 @@ router
   .post(
     auth(USER_ROLES.Student),
     validateRequest(
-      EnrolledCourseValidations.createEnrolledCourseValidationSchema,
+      enrolledCourseValidations.createEnrolledCourseValidationSchema,
     ),
     enrolledCourseControllers.createEnrolledCourse,
   );
 
+// update enrolled course
+router
+  .route('/update-enrolled-course-marks')
+  .patch(
+    auth(USER_ROLES.Faculty),
+    validateRequest(
+      enrolledCourseValidations.updateEnrolledCourseValidationSchema,
+    ),
+    enrolledCourseControllers.updateEnrolledCourse,
+  );
 //   --------------
 export const EnrolledCourseRoutes = router;
