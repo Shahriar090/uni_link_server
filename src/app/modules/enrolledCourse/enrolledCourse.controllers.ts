@@ -19,8 +19,8 @@ const createEnrolledCourse = catchAsync(async (req, res) => {
 });
 
 // update enrolled course
-const updateEnrolledCourse = catchAsync(async (req, res) => {
-  const { facultyId } = req.user;
+const updateEnrolledCourseMarks = catchAsync(async (req, res) => {
+  const facultyId = req.user?.userId;
   const result = await enrolledCourseServices.updateEnrolledCourseMarksIntoDb(
     req.body,
     facultyId,
@@ -35,5 +35,5 @@ const updateEnrolledCourse = catchAsync(async (req, res) => {
 
 export const enrolledCourseControllers = {
   createEnrolledCourse,
-  updateEnrolledCourse,
+  updateEnrolledCourseMarks,
 };

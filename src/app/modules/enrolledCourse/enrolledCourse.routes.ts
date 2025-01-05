@@ -25,7 +25,7 @@ router
     validateRequest(
       enrolledCourseValidations.updateEnrolledCourseValidationSchema,
     ),
-    enrolledCourseControllers.updateEnrolledCourse,
+    enrolledCourseControllers.updateEnrolledCourseMarks,
   );
 //   --------------
 export const EnrolledCourseRoutes = router;

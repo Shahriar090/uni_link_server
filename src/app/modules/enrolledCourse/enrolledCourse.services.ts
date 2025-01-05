@@ -7,6 +7,7 @@ import EnrolledCourse from './enrolledCourse.model';
 import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Course } from '../course/course.model';
+import Faculty from '../faculty/faculty.model';
 
 // create enrolled course into db
 const createEnrolledCourseIntoDb = async (
@@ -190,6 +191,46 @@ const updateEnrolledCourseMarksIntoDb = async (
   if (!isStudentExists) {
     throw new AppError(httpStatusCodes.NOT_FOUND, 'Student Not Found', '');
   }
+
+  // Check if the faculty belongs to the specific course to update the marks.
+
+  const faculty = await Faculty.findOne({ id: facultyId }, { _id: 1 });
+  if (!faculty) {
+    throw new AppError(httpStatusCodes.NOT_FOUND, 'Faculty Not Found!', '');
+  }
+
+  const isCourseBelongsToFaculty = await EnrolledCourse.findOne({
+    semesterRegistration,
+    offeredCourse,
+    student,
+    faculty: faculty._id,
+  });
+
+  if (!isCourseBelongsToFaculty) {
+    throw new AppError(
+      httpStatusCodes.FORBIDDEN,
+      'You Do Not Have Access To Update The Marks For This Course!',
+      '',
+    );
+  }
+
+  const modifiedData: Record<string, unknown> = {
+    ...courseMarks,
+  };
+
+  if (courseMarks && Object.keys(courseMarks).length) {
+    for (const [key, value] of Object.entries(courseMarks)) {
+      modifiedData[`courseMarks.${key}`] = value;
+    }
+  }
+
+  const result = await EnrolledCourse.findByIdAndUpdate(
+    isCourseBelongsToFaculty?._id,
+    modifiedData,
+    { new: true },
+  );
+
+  return result;
 };
 
 export const enrolledCourseServices = {
