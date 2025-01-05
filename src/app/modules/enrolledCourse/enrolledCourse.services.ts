@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Course } from '../course/course.model';
 import Faculty from '../faculty/faculty.model';
+import { calculateGradePoints } from './enrolledCourse.utils';
 
 // create enrolled course into db
 const createEnrolledCourseIntoDb = async (
@@ -228,7 +229,11 @@ const updateEnrolledCourseMarksIntoDb = async (
       Math.ceil(classTest2 * 0.1) +
       Math.ceil(finalTerm * 0.5);
 
-    console.log(totalMarks);
+    const result = calculateGradePoints(totalMarks);
+    modifiedData.grade = result.grade;
+    modifiedData.gradePoints = result.gradePoints;
+    modifiedData.isCompleted = true;
+    console.log(result);
   }
 
   if (courseMarks && Object.keys(courseMarks).length) {
