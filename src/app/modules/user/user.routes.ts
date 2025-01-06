@@ -11,7 +11,7 @@ import { upload } from '../../utils/sendImageToCloudinary';
 const userRouter = express.Router();
 // create student
 userRouter.route('/create-student').post(
-  auth(USER_ROLES.Admin),
+  auth(USER_ROLES.Super_Admin, USER_ROLES.Admin),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
