@@ -41,6 +41,20 @@ const createStudentIntoDb = async (
     payload.admissionSemester,
   );
 
+  // find academic department
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Academic Department Not Found.!',
+      '',
+    );
+  }
+
+  payload.academicFaculty = academicDepartment.academicFaculty;
   // implementing transaction and rollback to create user and student.
   const session = await mongoose.startSession();
   try {
