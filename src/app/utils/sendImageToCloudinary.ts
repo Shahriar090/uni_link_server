@@ -12,7 +12,7 @@ cloudinary.config({
 export const sendImageToCloudinary = async (
   imageName: string,
   path: string,
-) => {
+): Promise<Record<string, unknown>> => {
   try {
     const uploadResult = await cloudinary.uploader.upload(path, {
       public_id: imageName,
@@ -27,7 +27,7 @@ export const sendImageToCloudinary = async (
     });
     console.log('Upload successful and local file deleted:', uploadResult);
     return uploadResult;
-  } catch (err) {
+  } catch (err: any) {
     console.error('Upload failed:', err);
     return err;
   }

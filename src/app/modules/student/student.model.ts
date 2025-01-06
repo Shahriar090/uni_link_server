@@ -149,7 +149,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: Boolean,
       default: false,
     },
-    profileImage: { type: String },
+    profileImage: { type: String, default: '' },
   },
   { timestamps: true, toJSON: { virtuals: true } },
 );
