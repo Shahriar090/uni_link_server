@@ -77,9 +77,15 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
       required: [true, 'Permanent Address Id Required'],
     },
     profileImage: { type: String, default: '' },
+
     academicDepartment: {
       type: Schema.Types.ObjectId,
+      required: [true, 'Academic Department Is Required'],
       ref: 'AcademicDepartment',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
     },
     isDeleted: { type: Boolean, default: false },
   },

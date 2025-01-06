@@ -132,6 +132,8 @@ const createFacultyIntoDb = async (
     );
   }
 
+  payload.academicFaculty = academicDepartment.academicFaculty;
+
   // start session
   const session = await mongoose.startSession();
 
