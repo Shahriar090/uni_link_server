@@ -7,7 +7,7 @@ export interface IUser {
   password: string;
   passwordChangedAt?: Date;
   needsPasswordChange: boolean;
-  role: 'Admin' | 'Faculty' | 'Student';
+  role: 'Super_Admin' | 'Admin' | 'Faculty' | 'Student';
   status: 'In-Progress' | 'Blocked';
   isDeleted: boolean;
 }

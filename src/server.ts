@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { app } from './app';
 import config from './app/config';
 import { Server } from 'http';
+import seedSuperAdmin from './app/DB';
 
 let server: Server;
 
@@ -9,6 +10,7 @@ async function main() {
   try {
     await mongoose.connect(config.database_url as string);
     console.log('Database Connected Successfully');
+    seedSuperAdmin();
 
     server = app.listen(config.port, () => {
       console.log(`Uni Link Server Is Listening On Port ${config.port}`);
