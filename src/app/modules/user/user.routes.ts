@@ -25,21 +25,28 @@ userRouter.route('/create-student').post(
 );
 
 // create faculty
-userRouter
-  .route('/create-faculty')
-  .post(
-    auth(USER_ROLES.Admin),
-    validateRequest(facultyValidations.createFacultyValidationSchema),
-    userControllers.createFaculty,
-  );
+userRouter.route('/create-faculty').post(
+  auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  validateRequest(facultyValidations.createFacultyValidationSchema),
+  userControllers.createFaculty,
+);
 
 // create admin
-userRouter
-  .route('/create-admin')
-  .post(
-    validateRequest(adminValidations.createAdminValidationSchema),
-    userControllers.createAdmin,
-  );
+userRouter.route('/create-admin').post(
+  auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  validateRequest(adminValidations.createAdminValidationSchema),
+  userControllers.createAdmin,
+);
 
 // get me
 userRouter
@@ -53,6 +60,7 @@ userRouter
 userRouter
   .route('/change-status/:id')
   .post(
+    auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
     auth(USER_ROLES.Admin),
     validateRequest(userValidations.changeStatusValidationSchema),
     userControllers.changeStatus,
