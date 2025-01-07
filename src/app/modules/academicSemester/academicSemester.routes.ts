@@ -19,17 +19,34 @@ academicSemesterRouter
 // get all academic semester
 academicSemesterRouter
   .route('/')
-  .get(academicSemesterControllers.getAllAcademicSemester);
+  .get(
+    auth(
+      USER_ROLES.Super_Admin,
+      USER_ROLES.Admin,
+      USER_ROLES.Faculty,
+      USER_ROLES.Student,
+    ),
+    academicSemesterControllers.getAllAcademicSemester,
+  );
 
 // get a single academic semester
 academicSemesterRouter
   .route('/:semesterId')
-  .get(academicSemesterControllers.getASingleAcademicSemester);
+  .get(
+    auth(
+      USER_ROLES.Super_Admin,
+      USER_ROLES.Admin,
+      USER_ROLES.Faculty,
+      USER_ROLES.Student,
+    ),
+    academicSemesterControllers.getASingleAcademicSemester,
+  );
 
 // update academic semester
 academicSemesterRouter
   .route('/:semesterId')
   .patch(
+    auth(USER_ROLES.Super_Admin, USER_ROLES.Admin),
     validateRequest(
       academicSemesterValidations.updateAcademicSemesterValidationSchema,
     ),
