@@ -59,6 +59,11 @@ courseRouter
     courseControllers.assignFacultiesWithCourse,
   );
 
+// get faculties
+courseRouter
+  .route('/:courseId/get-faculties')
+  .get(courseControllers.getFacultiesWithCourse);
+
 // remove faculties from course
 courseRouter
   .route('/:courseId/remove-faculties')

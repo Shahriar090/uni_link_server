@@ -139,6 +139,9 @@ const assignFacultiesWithCourseIntoDb = async (
   return result;
 };
 
+// get faculties
+const getFacultiesWithCourseFromDb = async (id: string) => {};
+
 // remove faculties from course
 const removeFacultiesFromCourseFromDb = async (
   id: string,
@@ -171,4 +174,5 @@ export const courseServices = {
   assignFacultiesWithCourseIntoDb,
   removeFacultiesFromCourseFromDb,
   deleteCourseFromDb,
+  getFacultiesWithCourseFromDb,
 };
