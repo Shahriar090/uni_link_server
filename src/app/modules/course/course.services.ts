@@ -140,7 +140,12 @@ const assignFacultiesWithCourseIntoDb = async (
 };
 
 // get faculties
-const getFacultiesWithCourseFromDb = async (id: string) => {};
+const getFacultiesWithCourseFromDb = async (courseId: string) => {
+  const result = await CourseFaculty.findOne({ course: courseId }).populate(
+    'faculties',
+  );
+  return result;
+};
 
 // remove faculties from course
 const removeFacultiesFromCourseFromDb = async (
