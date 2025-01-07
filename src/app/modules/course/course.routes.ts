@@ -16,7 +16,17 @@ courseRouter
   );
 
 //   get all
-courseRouter.route('/').get(courseControllers.getAllCourses);
+courseRouter
+  .route('/')
+  .get(
+    auth(
+      USER_ROLES.Admin,
+      USER_ROLES.Super_Admin,
+      USER_ROLES.Faculty,
+      USER_ROLES.Student,
+    ),
+    courseControllers.getAllCourses,
+  );
 
 // get single
 courseRouter
