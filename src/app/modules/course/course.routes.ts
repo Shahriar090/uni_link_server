@@ -19,12 +19,23 @@ courseRouter
 courseRouter.route('/').get(courseControllers.getAllCourses);
 
 // get single
-courseRouter.route('/:id').get(courseControllers.getSingleCourse);
+courseRouter
+  .route('/:id')
+  .get(
+    auth(
+      USER_ROLES.Admin,
+      USER_ROLES.Super_Admin,
+      USER_ROLES.Faculty,
+      USER_ROLES.Student,
+    ),
+    courseControllers.getSingleCourse,
+  );
 
 // update a course
 courseRouter
   .route('/:id')
   .patch(
+    auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
     validateRequest(courseValidations.updateCourseValidationSchema),
     courseControllers.updateCourse,
   );
@@ -33,6 +44,7 @@ courseRouter
 courseRouter
   .route('/:courseId/assign-faculties')
   .put(
+    auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
     validateRequest(courseValidations.facultiesWithCourseValidationSchema),
     courseControllers.assignFacultiesWithCourse,
   );
@@ -41,11 +53,17 @@ courseRouter
 courseRouter
   .route('/:courseId/remove-faculties')
   .delete(
+    auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
     validateRequest(courseValidations.facultiesWithCourseValidationSchema),
     courseControllers.removeFacultiesFromCourse,
   );
 
 // delete one
-courseRouter.route('/:id').delete(courseControllers.deleteCourse);
+courseRouter
+  .route('/:id')
+  .delete(
+    auth(USER_ROLES.Admin, USER_ROLES.Super_Admin),
+    courseControllers.deleteCourse,
+  );
 
 export const courseRoutes = courseRouter;
