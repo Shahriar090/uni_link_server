@@ -9,6 +9,7 @@ import { OfferedCourses } from './offeredCourses.model';
 import httpStatus from 'http-status-codes';
 import { hasTimeConflict } from './offeredCourses.utils';
 import { JwtPayload } from 'jsonwebtoken';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 // create
 const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
@@ -126,9 +127,16 @@ const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
 };
 
 // get all
-const getAllOfferedCoursesFromDb = async () => {
-  const result = await OfferedCourses.find();
-  return result;
+const getAllOfferedCoursesFromDb = async (query: Record<string, unknown>) => {
+  const offeredCoursesQuery = new QueryBuilder(OfferedCourses.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await offeredCoursesQuery.modelQuery;
+  const meta = await offeredCoursesQuery.countTotal();
+  return { meta, result };
 };
 
 // get single
