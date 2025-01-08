@@ -38,6 +38,11 @@ router
     offeredCoursesControllers.getSingleOfferedCourse,
   );
 
+// my offered courses route
+router
+  .route('/my-offered-courses')
+  .get(auth(USER_ROLES.Student), offeredCoursesControllers.getMyOfferedCourses);
+
 // update
 router
   .route('/:id')

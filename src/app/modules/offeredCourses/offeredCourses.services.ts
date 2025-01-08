@@ -8,6 +8,7 @@ import { TOfferedCourses } from './offeredCourses.interface';
 import { OfferedCourses } from './offeredCourses.model';
 import httpStatus from 'http-status-codes';
 import { hasTimeConflict } from './offeredCourses.utils';
+import { JwtPayload } from 'jsonwebtoken';
 
 // create
 const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
@@ -136,6 +137,9 @@ const getSingleOfferedCourseFromDb = async (id: string) => {
   return result;
 };
 
+// get my offered courses
+const getMyOfferedCoursesFromDb = async (userId: JwtPayload) => {};
+
 // update
 const updateOfferedCourseIntoDb = async (
   id: string,
@@ -207,4 +211,5 @@ export const offeredCoursesServices = {
   updateOfferedCourseIntoDb,
   getAllOfferedCoursesFromDb,
   getSingleOfferedCourseFromDb,
+  getMyOfferedCoursesFromDb,
 };
