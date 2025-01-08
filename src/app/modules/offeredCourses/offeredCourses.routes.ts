@@ -17,10 +17,32 @@ router
     offeredCoursesControllers.createOfferedCourses,
   );
 
+// get all
+router
+  .route('/')
+  .get(
+    auth(USER_ROLES.Super_Admin, USER_ROLES.Admin),
+    offeredCoursesControllers.getAllOfferedCourses,
+  );
+
+// get single
+router
+  .route('/:id')
+  .get(
+    auth(
+      USER_ROLES.Super_Admin,
+      USER_ROLES.Admin,
+      USER_ROLES.Faculty,
+      USER_ROLES.Student,
+    ),
+    offeredCoursesControllers.getSingleOfferedCourse,
+  );
+
 // update
 router
   .route('/:id')
   .patch(
+    auth(USER_ROLES.Super_Admin, USER_ROLES.Admin),
     validateRequest(
       offeredCoursesValidations.updateOfferedCoursesValidationSchema,
     ),

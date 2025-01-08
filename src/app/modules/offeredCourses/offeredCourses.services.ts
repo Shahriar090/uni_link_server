@@ -124,6 +124,18 @@ const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
   return result;
 };
 
+// get all
+const getAllOfferedCoursesFromDb = async () => {
+  const result = await OfferedCourses.find();
+  return result;
+};
+
+// get single
+const getSingleOfferedCourseFromDb = async (id: string) => {
+  const result = await OfferedCourses.findById(id);
+  return result;
+};
+
 // update
 const updateOfferedCourseIntoDb = async (
   id: string,
@@ -193,4 +205,6 @@ const updateOfferedCourseIntoDb = async (
 export const offeredCoursesServices = {
   createOfferedCourseIntoDb,
   updateOfferedCourseIntoDb,
+  getAllOfferedCoursesFromDb,
+  getSingleOfferedCourseFromDb,
 };
