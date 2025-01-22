@@ -46,7 +46,7 @@ const getSingleOfferedCourse = catchAsync(async (req, res) => {
 
 // get my offered courses
 const getMyOfferedCourses = catchAsync(async (req, res) => {
-  const userId = req.user;
+  const { userId } = req.user;
   const result = await offeredCoursesServices.getMyOfferedCoursesFromDb(userId);
 
   sendResponse(res, {

@@ -24,6 +24,10 @@ router
     auth(USER_ROLES.Super_Admin, USER_ROLES.Admin),
     offeredCoursesControllers.getAllOfferedCourses,
   );
+// my offered courses route
+router
+  .route('/my-offered-courses')
+  .get(auth(USER_ROLES.Student), offeredCoursesControllers.getMyOfferedCourses);
 
 // get single
 router
@@ -37,11 +41,6 @@ router
     ),
     offeredCoursesControllers.getSingleOfferedCourse,
   );
-
-// my offered courses route
-router
-  .route('/my-offered-courses')
-  .get(auth(USER_ROLES.Student), offeredCoursesControllers.getMyOfferedCourses);
 
 // update
 router

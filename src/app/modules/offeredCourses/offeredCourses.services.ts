@@ -8,8 +8,8 @@ import { TOfferedCourses } from './offeredCourses.interface';
 import { OfferedCourses } from './offeredCourses.model';
 import httpStatus from 'http-status-codes';
 import { hasTimeConflict } from './offeredCourses.utils';
-import { JwtPayload } from 'jsonwebtoken';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { Student } from '../student/student.model';
 
 // create
 const createOfferedCourseIntoDb = async (payload: TOfferedCourses) => {
@@ -146,7 +146,20 @@ const getSingleOfferedCourseFromDb = async (id: string) => {
 };
 
 // get my offered courses
-const getMyOfferedCoursesFromDb = async (userId: JwtPayload) => {};
+const getMyOfferedCoursesFromDb = async (userId: string) => {
+  // find the student
+  const student = await Student.findOne({ id: userId });
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Student Not Found.!', '');
+  }
+
+  // find the ongoing semester
+  const currentOngoingSemester = await SemesterRegistration.findOne({
+    status: 'ONGOING',
+  });
+
+  return currentOngoingSemester;
+};
 
 // update
 const updateOfferedCourseIntoDb = async (
