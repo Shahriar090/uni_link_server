@@ -27,5 +27,13 @@ router
     ),
     enrolledCourseControllers.updateEnrolledCourseMarks,
   );
+
+// get my enrolled courses
+router
+  .route('/my-enrolled-courses')
+  .get(
+    auth(USER_ROLES.Student),
+    enrolledCourseControllers.getMyEnrolledCourses,
+  );
 //   --------------
 export const EnrolledCourseRoutes = router;
