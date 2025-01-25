@@ -146,7 +146,15 @@ const getSingleOfferedCourseFromDb = async (id: string) => {
 };
 
 // get my offered courses
-const getMyOfferedCoursesFromDb = async (userId: string) => {
+const getMyOfferedCoursesFromDb = async (
+  userId: string,
+  query: Record<string, unknown>,
+) => {
+  // setup pagination
+  const page = Number(query?.page) || 1;
+  const limit = Number(query?.limit) || 10;
+  const skip = (page - 1) * limit;
+
   // find the student
   const student = await Student.findOne({ id: userId });
   if (!student) {
@@ -168,7 +176,18 @@ const getMyOfferedCoursesFromDb = async (userId: string) => {
     );
   }
 
-  const result = await OfferedCourses.aggregate([
+  // pagination query
+  const paginationQuery = [
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ];
+
+  // aggregate query
+  const aggregationQuery = [
     {
       $match: {
         semesterRegistration: currentOngoingRegistrationSemester?._id,
@@ -287,12 +306,28 @@ const getMyOfferedCoursesFromDb = async (userId: string) => {
     {
       $match: {
         isPreRequisiteFullFilled: true,
-        isAlreadyEnrolled: false,
+        // isAlreadyEnrolled: false,
       },
     },
+  ];
+
+  const result = await OfferedCourses.aggregate([
+    ...aggregationQuery,
+    ...paginationQuery,
   ]);
 
-  return result;
+  const total = (await OfferedCourses.aggregate(aggregationQuery)).length;
+  const totalPage = Math.ceil(result.length / limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    result,
+  };
 };
 
 // update
